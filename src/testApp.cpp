@@ -15,6 +15,7 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
     
+    ofSetColor(0);
     ofDrawBitmapString("Player Controls", 10, 20);
     ofDrawBitmapString("Play/Stop = Spacebar", 10, 40);
     ofDrawBitmapString("Pause = p", 10, 60);
