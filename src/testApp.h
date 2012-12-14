@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxUI.h"
 
 class testApp : public ofBaseApp{
 	public:
@@ -18,6 +19,12 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
+    float panPos;
+    
         ofSoundPlayer my_sound;
         ofSoundPlayer my_singer;
+    
+    ofxUICanvas *gui;
+    void exit();
+    void guiEvent(ofxUIEventArgs &e);
 };

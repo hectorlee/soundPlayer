@@ -3,7 +3,21 @@
 //--------------------------------------------------------------
 void testApp::setup(){
     
+    ofEnableSmoothing();
+    
     my_sound.loadSound("song.mp3");
+    
+    gui = new ofxUICanvas(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+    
+    gui->addWidgetDown(new ofxUILabel("SOUND PLAYER", OFX_UI_FONT_LARGE));
+    gui->addWidgetDown(new ofxUISlider(304, 16, 0.0, 255.0, 100.0, "BACKGROUND VALUE"));
+    ofAddListener(gui->newGUIEvent, this, &testApp::guiEvent);
+    
+    gui->addWidgetDown(new ofxUIToggle(32, 32, false, "FULLSCREEN"));
+    gui->addWidgetEastOf(new ofxUIToggle(32, 32, false, "PLAY/STOP"), "FULLSCREEN");
+    gui->addWidgetEastOf(new ofxUIToggle(32, 32, false, "PAUSE"), "PLAY/STOP");
+    
+    gui->loadSettings("GUI/guisettings.xml");
 
 }
 
@@ -14,12 +28,6 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-    
-    ofSetColor(0);
-    ofDrawBitmapString("Player Controls", 10, 20);
-    ofDrawBitmapString("Play/Stop = Spacebar", 10, 40);
-    ofDrawBitmapString("Pause = p", 10, 60);
-    ofDrawBitmapString("Unpause = o", 10, 80);
 
 }
 
@@ -30,23 +38,6 @@ void testApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-    
-    if (key == 'p') {
-        my_sound.setPaused(true);
-    }
-    
-    if (key == 'o') {
-        my_sound.setPaused(false);
-    }
-    
-    if (key == ' ') {
-        if (my_sound.getIsPlaying() == true) {
-            my_sound.stop();
-        } else {
-            my_sound.play();
-        }
-
-    }
 
 }
 
@@ -88,4 +79,39 @@ void testApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void testApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+//--------------------------------------------------------------
+void testApp::exit(){
+    
+    gui->saveSettings("GUI/guisettings.xml");
+    delete gui;
+    
+}
+
+//--------------------------------------------------------------
+void testApp::guiEvent(ofxUIEventArgs &e){
+    
+    if(e.widget->getName() == "BACKGROUND VALUE") {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        //panPos = slider->getScaledValue();
+        ofBackground(slider->getScaledValue());
+    }
+    else if(e.widget->getName() == "FULLSCREEN") {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        ofSetFullscreen(toggle->getValue());
+    }
+    else if(e.widget->getName() == "PLAY/STOP") {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        if (toggle->getValue() == true) {
+            my_sound.play();
+        } else if (toggle->getValue() == false) {
+            my_sound.stop();
+        }
+    }
+    else if(e.widget->getName() == "PAUSE") {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        my_sound.setPaused(toggle->getValue());
+    }
+    
 }
